@@ -44,3 +44,21 @@ export function getConfigDir(): string {
 export function getConfigPath(): string {
   return CONFIG_FILE;
 }
+
+const WORKSPACES_FILE = join(CONFIG_DIR, 'workspaces.json');
+
+export interface WorkspaceEntry {
+  api_key: string;
+  base_url: string;
+}
+
+// ~/.emailbison/workspaces.json  ->  { "bluesteps": {api_key, base_url}, "clearspider": {...} }
+// Enables `bison --workspace <name> ...` to switch workspaces without re-auth.
+export function loadWorkspaces(): Record<string, WorkspaceEntry> {
+  try {
+    if (!existsSync(WORKSPACES_FILE)) return {};
+    return JSON.parse(readFileSync(WORKSPACES_FILE, 'utf-8')) as Record<string, WorkspaceEntry>;
+  } catch {
+    return {};
+  }
+}

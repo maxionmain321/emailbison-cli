@@ -16,8 +16,10 @@ import { leadsBlacklistCommand } from './blacklist.js';
 import { leadsRepliesCommand } from './replies.js';
 import { leadsSentEmailsCommand } from './sent-emails.js';
 import { leadsScheduledEmailsCommand } from './scheduled-emails.js';
+import { leadsUpsertCommand } from './upsert.js';
 
 export const leadCommands = [
+  leadsUpsertCommand,
   leadsListCommand,
   leadsGetCommand,
   leadsCreateCommand,

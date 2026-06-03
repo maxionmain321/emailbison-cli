@@ -13,7 +13,8 @@ program
   .option('--quiet', 'Suppress output, exit codes only')
   .option('--fields <fields>', 'Comma-separated fields to include in output')
   .option('--api-key <key>', 'EmailBison API key')
-  .option('--base-url <url>', 'EmailBison instance base URL');
+  .option('--base-url <url>', 'EmailBison instance base URL')
+  .option('--workspace <name>', 'Switch workspace by name (from ~/.emailbison/workspaces.json)');
 
 registerAllCommands(program);
 

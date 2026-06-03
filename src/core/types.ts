@@ -26,6 +26,8 @@ export interface CommandDefinition<TInput extends z.ZodObject<z.ZodRawShape> = z
     path: string;
   };
   fieldMappings: Record<string, 'path' | 'query' | 'body'>;
+  /** Optional reshape of the assembled body before sending (e.g. wrap to_emails, set content_type). */
+  transformBody?: (body: Record<string, unknown>) => Record<string, unknown>;
   handler: (input: z.infer<TInput>, client: BisonClient) => Promise<unknown>;
 }
 
@@ -52,4 +54,5 @@ export interface GlobalOptions {
   fields?: string;
   apiKey?: string;
   baseUrl?: string;
+  workspace?: string;
 }

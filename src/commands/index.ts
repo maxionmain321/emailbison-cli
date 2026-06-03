@@ -59,6 +59,7 @@ function getGlobalOpts(program: Command): GlobalOptions {
     fields: opts.fields,
     apiKey: opts.apiKey,
     baseUrl: opts.baseUrl,
+    workspace: opts.workspace,
   };
 }
 
@@ -118,7 +119,7 @@ function registerStatusCommand(program: Command): void {
     .action(async () => {
       const globalOpts = getGlobalOpts(program);
       try {
-        const auth = resolveAuth({ apiKey: globalOpts.apiKey, baseUrl: globalOpts.baseUrl });
+        const auth = resolveAuth({ apiKey: globalOpts.apiKey, baseUrl: globalOpts.baseUrl, workspace: globalOpts.workspace });
         const client = createClient(auth);
         const result = await client.request({ method: 'GET', path: '/api/users' });
         output({
@@ -211,7 +212,7 @@ function registerCommand(parent: Command, cmdDef: CommandDefinition, program: Co
     const globalOpts = getGlobalOpts(program);
 
     try {
-      const auth = resolveAuth({ apiKey: globalOpts.apiKey, baseUrl: globalOpts.baseUrl });
+      const auth = resolveAuth({ apiKey: globalOpts.apiKey, baseUrl: globalOpts.baseUrl, workspace: globalOpts.workspace });
       const client = createClient(auth);
 
       const input: Record<string, unknown> = {};
