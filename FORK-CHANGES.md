@@ -47,3 +47,11 @@ npm install -g .   # install this fork as the global `bison`
 `leads bulk-csv` (server wants multipart, not JSON) — use `leads upsert --file` instead. Note
 `create-or-update` returns ids only for NEW/changed leads, so `upsert --campaign-id` attaches those;
 re-pull the campaign to confirm totals for a pre-existing pool.
+
+## Added (GTM CLI shape standard, 2026-06-04)
+5. **`--agent` global flag** (`src/index.ts`, `core/types.ts`, `commands/index.ts`) — agent mode:
+   forces compact JSON (overrides `--pretty`), non-interactive. Conforms bison to the GTM CLI shape
+   standard shared with spider + trigger-dev-pp-cli. See `knowledge_base/technical/GTM_CLI_SHAPE_STANDARD.md`.
+6. **Typed exit codes** (`core/errors.ts` `exitCodeFor()`, `core/output.ts`) — `outputError` now exits
+   with a typed code instead of hardcoded 1: 0 ok | 3 not-found | 4 auth | 20 server/http | 22 validation |
+   29 rate-limit | 1 generic. Lets shell loops + agents branch on failure type without parsing prose.

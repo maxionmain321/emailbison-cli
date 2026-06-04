@@ -55,4 +55,6 @@ export interface GlobalOptions {
   apiKey?: string;
   baseUrl?: string;
   workspace?: string;
+  /** GTM CLI shape standard: compact JSON, non-interactive. */
+  agent?: boolean;
 }

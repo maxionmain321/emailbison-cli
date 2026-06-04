@@ -60,6 +60,7 @@ function getGlobalOpts(program: Command): GlobalOptions {
     apiKey: opts.apiKey,
     baseUrl: opts.baseUrl,
     workspace: opts.workspace,
+    agent: opts.agent,
   };
 }
 
