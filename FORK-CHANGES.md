@@ -28,6 +28,14 @@ server-quirk fixes, not upstream bugs — hence a maintained fork.
    bulk CSV upsert in batches via the validated `/leads/create-or-update/multiple` (patch-preserving),
    with optional campaign attach. CSV header: `email,first_name,last_name,...`.
 
+## More (2026-06-04)
+5. **`--fields` works on single-object gets** (`src/core/output.ts`) — `bison replies get <id>
+   --fields x` returned `{}` because it projected the `{data:{...}}` wrapper, not the inner object.
+   Now projects the inner object.
+6. **`replies list --folder <inbox|sent|spam|bounced|all>`** + `--status`/`--search`/`--lead-id`
+   (`src/commands/replies/list.ts`) — needed to pull the *sent* folder for timestamp-based reply
+   triage (find leads whose latest inbound is newer than our latest outbound = awaiting reply).
+
 ## Build / install
 ```
 npm install        # deps
