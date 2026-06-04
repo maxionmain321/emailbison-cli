@@ -42,6 +42,10 @@ function projectFields(data: unknown, fields: string): unknown {
     if (Array.isArray(inner)) {
       return { ...data as object, data: inner.map((item) => pickKeys(item, keys)) };
     }
+    // single-object response ({ data: {...} }) — project the inner object, not the wrapper
+    if (inner && typeof inner === 'object') {
+      return { ...data as object, data: pickKeys(inner, keys) };
+    }
   }
 
   return pickKeys(data, keys);
