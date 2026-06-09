@@ -36,6 +36,16 @@ server-quirk fixes, not upstream bugs — hence a maintained fork.
    (`src/commands/replies/list.ts`) — needed to pull the *sent* folder for timestamp-based reply
    triage (find leads whose latest inbound is newer than our latest outbound = awaiting reply).
 
+## More (2026-06-08)
+7. **`leads upsert` now maps custom variables** (`src/commands/leads/upsert.ts`) — EB's bulk
+   `/leads/create-or-update/multiple` silently drops unknown top-level CSV columns, so per-lead
+   personalization vars never loaded. Upsert now treats `custom_*` columns (or `--custom-cols a,b`)
+   as custom variables: auto-creates each via `POST /api/custom-variables`, sends them nested as
+   `custom_variables:[{name,value}]`, and sets `existing_lead_behavior` (`--existing patch|put`,
+   default patch). Reference them in copy as `{UPPERCASE}` single-brace (EB Liquid). Verified on the
+   Tendify Construction load (5,357 leads). NB: `warmup list/get/enable/disable` already existed in
+   source — just needed a rebuild (`npm run build`) to go live.
+
 ## Build / install
 ```
 npm install        # deps
