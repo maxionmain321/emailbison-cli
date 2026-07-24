@@ -18,6 +18,8 @@ export const repliesReplyCommand: CommandDefinition = {
     sender_email_id: z.coerce.number().optional().describe('Sender inbox id (defaults to thread inbox)'),
     content_type: z.string().optional().describe('html | text (default html)'),
     to_email: z.string().optional().describe('Recipient email (optional)'),
+    cc: z.string().optional().describe('CC recipient(s), comma-separated'),
+    bcc: z.string().optional().describe('BCC recipient(s), comma-separated'),
   }),
   cliMappings: {
     args: [{ field: 'reply_id', name: 'reply-id', required: true }],
@@ -28,12 +30,14 @@ export const repliesReplyCommand: CommandDefinition = {
       { field: 'sender_email_id', flags: '--sender-email-id <id>', description: 'Sender inbox id' },
       { field: 'content_type', flags: '--content-type <type>', description: 'html | text' },
       { field: 'to_email', flags: '--to-email <email>', description: 'Recipient email' },
+      { field: 'cc', flags: '--cc <emails>', description: 'CC recipient(s), comma-separated' },
+      { field: 'bcc', flags: '--bcc <emails>', description: 'BCC recipient(s), comma-separated' },
     ],
   },
   endpoint: { method: 'POST', path: '/api/replies/{reply_id}/reply' },
   fieldMappings: {
     reply_id: 'path', message: 'body', body_text: 'body', body_html: 'body',
-    sender_email_id: 'body', content_type: 'body', to_email: 'body',
+    sender_email_id: 'body', content_type: 'body', to_email: 'body', cc: 'body', bcc: 'body',
   },
   transformBody: (body) => {
     body.message = body.message ?? body.body_html ?? body.body_text;
@@ -42,6 +46,10 @@ export const repliesReplyCommand: CommandDefinition = {
     if (body.inject_previous_email_body === undefined) body.inject_previous_email_body = true;
     body.reply_all = body.reply_all ?? false;
     if (body.to_email) { body.to_emails = [{ email_address: body.to_email }]; delete body.to_email; }
+    // CC / BCC: server takes cc_emails[] / bcc_emails[] parallel to to_emails[].
+    const toList = (s: string) => s.split(',').map((e) => ({ email_address: e.trim() })).filter((x) => x.email_address);
+    if (body.cc) { body.cc_emails = toList(body.cc); delete body.cc; }
+    if (body.bcc) { body.bcc_emails = toList(body.bcc); delete body.bcc; }
     return body;
   },
   handler: (input, client) => executeCommand(repliesReplyCommand, input, client),

@@ -46,6 +46,16 @@ server-quirk fixes, not upstream bugs — hence a maintained fork.
    Tendify Construction load (5,357 leads). NB: `warmup list/get/enable/disable` already existed in
    source — just needed a rebuild (`npm run build`) to go live.
 
+## More (2026-07-24)
+8. **`replies reply --cc <emails> --bcc <emails>`** (`src/commands/replies/reply.ts`) — reply into a
+   thread while copying additional recipients. Comma-separated; `transformBody` maps them to the
+   server's `cc_emails[{email_address}]` / `bcc_emails[{email_address}]` arrays (parallel to
+   `to_emails`). **Verified end-to-end 2026-07-24**: the reply-response object echoes the `cc` field
+   populated with the address (it is `null` when unset), so acceptance is confirmable from the send
+   response, not just a 200. Use: `bison replies reply <id> --sender-email-id <sid> --to-email <lead>
+   --cc support@example.com --message "<html>"`. (Built for the BlueSteps customer-support handoff:
+   introduce a real support contact by cc onto a lead thread.)
+
 ## Build / install
 ```
 npm install        # deps
