@@ -20,6 +20,17 @@ server-quirk fixes, not upstream bugs — hence a maintained fork.
    `to_emails[{email_address}]` / `content_type`, not `body_text` / `from_sender_email_id` / `to_email`.
    Both reshaped via a new `transformBody` hook (`src/core/types.ts`, `handler.ts`). Use `--message`.
 
+5. **`replies mark-read-unread` + `replies mark-automated` now actually work** (2026-09-02) — the
+   server's body fields are `read` / `automated`, but the CLI sent `is_read` / `is_automated`, so both
+   commands `422`'d on every call (`"The read field is required."`). Both now reshape via `transformBody`.
+   **Second bug in the same commands:** `z.coerce.boolean()` runs JS `Boolean(value)`, so the strings
+   `"false"` and `"0"` both parsed as **true** and `--is-read false` asked the server to mark the reply
+   READ. Replaced with `booleanFlag` (`src/core/schema.ts`), which parses true/false/1/0/yes/no/on/off
+   and rejects anything else rather than silently defaulting to true. `replies list --is-read` uses the
+   same parser now, though the server ignores that filter entirely (see GOTCHAS).
+   Verified live end-to-end against `send.maxionlabs.com`, asserting on the reply object's own
+   `read` / `automated_reply` field after each call, not on the response.
+
 ## Added (LeadGrow parity)
 3. **`--workspace <name>`** global flag (`src/index.ts`, `core/auth.ts`, `core/config.ts`) — switch
    workspace without re-auth, reading `~/.emailbison/workspaces.json` (`{ name: {api_key, base_url} }`).
